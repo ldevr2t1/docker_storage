@@ -15,11 +15,11 @@ from flask.ext.api import status
 from pymongo import MongoClient
 
 #____FOR DOCKER______
-#client = MongoClient(os.environ['DB_PORT_27017_TCP_ADDR'],27017)
+client = MongoClient(os.environ['DB_PORT_27017_TCP_ADDR'],27017)
 #____________________
 
 #____FOR LOCAL_______
-client = MongoClient()
+#client = MongoClient()
 #____________________
 
 db = client.path_db
@@ -70,6 +70,23 @@ def get_problem(problem_id):
     #if the uid doesn't exist then just go ahead return error status
     #ret_object.pop('problem_id', 0)
     return jsonify({"body": ret_object['body'], "version": ret_object['version']})
+    
+def get_version(problem_id):
+    """
+    Problems
+    Returns current version
+    :param problem_id: The id of the problem being manipulated
+    :type problem_id: int
+
+    :rtype: Problem
+    """
+    ret_object = db.posts.find_one({"problem_id": str(problem_id)})
+    #run a check to see if the uid exists
+    if ret_object is None:
+        return get_status(404, "COULD NOT FIND"), status.HTTP_404_NOT_FOUND
+    #if the uid doesn't exist then just go ahead return error status
+    #ret_object.pop('problem_id', 0)
+    return jsonify({"version": ret_object['version']})  
 
 
 def update_problem(problem_id, version, problem):
@@ -129,12 +146,20 @@ def get_specific_key(problem_id, version, key):
 
     :rtype: Body
     """
-    ret_object = db.posts.find_one({"problem_id": str(problem_id), "version": version})
+    ret_object = db.posts.find_one({"problem_id": str(problem_id)})
     #run a check to see if the uid exists
     if ret_object is None:
+        print("1")
         return get_status(404, "COULD NOT FIND"), status.HTTP_404_NOT_FOUND
-    #if the uid doesn't exist then just go ahead return error status
-    value = ret_object['body'][key]
-    if value is None:
-        return get_status(405, "Invalid Key")
+    elif ret_object['version'] != version:
+        print("2")
+        return jsonify({"version": ret_object['version']}), status.HTTP_412_PRECONDITION_FAILED
+    else:
+        value = ret_object['body'].get(key, None)
+        print("value is:")
+        print(value)
+        if value is None:
+            print("3")
+            return get_status(417, "Invalid Key"), HTTP_417_EXPECTATION_FAILED
+    
     return jsonify({key: value})

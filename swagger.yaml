@@ -113,7 +113,35 @@ paths:
           description: "Invalid ID supplied"
         404:
           description: "Problem not found"
-      x-swagger-router-controller: "swagger_server.controllers.problem_controller"      
+      x-swagger-router-controller: "swagger_server.controllers.problem_controller"  
+  /id={problem_id}/version/:
+      get:
+        tags:
+        - "Problem"
+        summary: "Problems"
+        description: "Returns current version of a problem\n"
+        operationId: "get_version"
+        produces:
+        - "application/json"
+        - "application/xml"
+        parameters:
+        - name: "problem_id"
+          in: "path"
+          description: "The id of the problem being manipulated"
+          required: true
+          type: "integer"
+          format: "int32"
+        responses:
+          200:
+            description: "The version number"
+            schema:
+              type: "integer"
+              format: "int32"
+          default:
+            description: "Unexpected error"
+            schema:
+              $ref: "#/definitions/Error"
+        x-swagger-router-controller: "swagger_server.controllers.problem_controller"          
   /id={problem_id}/ver={version}/:
     put:
       tags:
@@ -154,8 +182,8 @@ paths:
             format: "int32"
         404:
           description: "Problem not found"
-        405:
-          description: "Validation exception"
+        412:
+          description: "Incorrect version number"
           schema:
             description: "latest version number"
             type: "integer"
@@ -196,10 +224,16 @@ paths:
           description: "A value from a specific key"
           schema:
             $ref: "#/definitions/Body"
-        default:
-          description: "Unexpected error"
+        404:
+          description: "Problem not found"
+        412:
+          description: "Incorrect version number"
           schema:
-            $ref: "#/definitions/Error"
+            description: "latest version number"
+            type: "integer"
+            format: "int32"
+        417:
+          description: "Invalid Key"
       x-swagger-router-controller: "swagger_server.controllers.problem_controller"
 definitions:
   Body:
