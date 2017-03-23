@@ -85,10 +85,8 @@ paths:
           description: "A Problem type, containing all values"
           schema:
             $ref: "#/definitions/Problem"
-        default:
-          description: "Unexpected error"
-          schema:
-            $ref: "#/definitions/Error"
+        404:
+          description: "Problem not found"
       x-swagger-router-controller: "swagger_server.controllers.problem_controller"  
     delete:
       tags:
@@ -109,8 +107,6 @@ paths:
       responses:
         200:
           description: "Delete Successful"
-        400:
-          description: "Invalid ID supplied"
         404:
           description: "Problem not found"
       x-swagger-router-controller: "swagger_server.controllers.problem_controller"  
@@ -137,10 +133,8 @@ paths:
             schema:
               type: "integer"
               format: "int32"
-          default:
-            description: "Unexpected error"
-            schema:
-              $ref: "#/definitions/Error"
+          404:
+            description: "Problem not found"
         x-swagger-router-controller: "swagger_server.controllers.problem_controller"          
   /id={problem_id}/ver={version}/:
     put:

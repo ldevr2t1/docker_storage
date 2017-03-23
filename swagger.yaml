@@ -109,8 +109,6 @@ paths:
       responses:
         200:
           description: "Delete Successful"
-        400:
-          description: "Invalid ID supplied"
         404:
           description: "Problem not found"
       x-swagger-router-controller: "swagger_server.controllers.problem_controller"  
