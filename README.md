@@ -32,7 +32,7 @@ This is Team 1's Assignment 6 for ECE 4574 at Virginia Tech
 ## How to Stop the Docker Container ##
 Run the command `docker stop [id]`, where `[id]` is the generated id number of your container. If you do not know what your container id is, use the command `docker ps` to view all running containers.
 
-## To configure host/ui address
+## To configure host/ui address ##
 1. To change the server's IP-address edit the **'host'** parameter in main.
     * `File: web/swagger_server/__main__.py`
         - `app.run(host='<your_address>', port=<port_number>)`
@@ -41,7 +41,7 @@ Run the command `docker stop [id]`, where `[id]` is the generated id number of y
     * `web/swagger_server/server/swagger.yaml`
         - `host: "<your_address>:<port_number>"`
 
-## Changing the port number
+## Changing the port number ##
 1. Change the *<port_number>* in the same files for configuring the host/ui address
 2. Go into the base directory /docker_pathfind and edit the **docker-compose.yml**
     * `ports: ` 
@@ -49,6 +49,15 @@ Run the command `docker stop [id]`, where `[id]` is the generated id number of y
 3. Change the **Dockerfile** (i.e. change the EXPOSE #)
     * `#Expose port # for testing`
     -`    EXPOSE <port_number>`
+    
+## Creating a Docker Swarm ##
+Run these commands in the following order:
+1. Navigate to the web directory
+2. Run `docker-compose up`
+3. Run `docker swarm init`
+4. Run `docker stack deploy --compose-file docker-compose.yml docker_storage`
+
+You may now use your swarm normally.
 
 ### Authors ###
 
